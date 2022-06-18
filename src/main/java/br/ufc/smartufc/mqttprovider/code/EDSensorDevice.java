@@ -3,11 +3,12 @@ package br.ufc.smartufc.mqttprovider.code;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
-public class EventDrivenSensor extends GenericSensor implements Runnable, MqttCallback {
+import br.ufc.smartufc.mqttprovider.util.Param;
+
+public class EDSensorDevice extends GenericDevice {
 	private double lambda;
 	private int randomEvent;
 	// private int idSensor;
@@ -17,8 +18,8 @@ public class EventDrivenSensor extends GenericSensor implements Runnable, MqttCa
 	private String typeSend;
 	// private String pDistribution;
 
-	public EventDrivenSensor(String sensorType, double lambda, int duration, String topic, CountDownLatch latch) {
-		super(sensorType, duration, topic, latch);
+	public EDSensorDevice(String sensorType, double lambda, int duration, String topic, CountDownLatch latch) {
+		super(sensorType, duration, topic, null, latch);
 		this.duration = duration * 1000;
 		// this.idSensor = 1;
 		this.lambda = lambda;
@@ -34,9 +35,9 @@ public class EventDrivenSensor extends GenericSensor implements Runnable, MqttCa
 
 	}
 
-	public EventDrivenSensor(String sensorType, String[] messageType, double lambda, String typeSend, int duration,
+	public EDSensorDevice(String sensorType, String[] messageType, double lambda, String typeSend, int duration,
 			String topic, CountDownLatch latch) {
-		super(sensorType, messageType, duration, topic, latch);
+		super(sensorType, messageType, duration, topic, null, latch);
 		this.duration = duration * 1000;
 		// this.idSensor = 1;
 		this.typeSend = typeSend;
@@ -51,9 +52,9 @@ public class EventDrivenSensor extends GenericSensor implements Runnable, MqttCa
 		// end:" + end);
 	}
 
-	public EventDrivenSensor(String sensorType, String[] messageType, String[] max, String[] min, double lambda,
+	public EDSensorDevice(String sensorType, String[] messageType, String[] max, String[] min, double lambda,
 			String typeSend, int duration, String topic, CountDownLatch latch) {
-		super(sensorType, messageType, duration, topic, latch);
+		super(sensorType, messageType, duration, topic, null, latch);
 		this.duration = duration * 1000;
 		// this.idSensor = 1;
 		this.max = max;
@@ -286,7 +287,7 @@ public class EventDrivenSensor extends GenericSensor implements Runnable, MqttCa
 			// m += ";P1=" + time + ";";
 			// System.out.println(m);
 			// MessageArray.setMsg(m, new Date(System.currentTimeMillis()), this.topic);
-			client.publish(topic, m.getBytes(), Param.qos, false);
+			client.publish(this.topicPub, m.getBytes(), Param.qos, false);
 		} catch (MqttPersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

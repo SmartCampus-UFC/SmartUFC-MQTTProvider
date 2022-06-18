@@ -1,5 +1,7 @@
 package br.ufc.smartufc.mqttprovider.code;
 
+import br.ufc.smartufc.mqttprovider.util.Param;
+
 public class TimeControl {
 	public static boolean timeControl = true;
 	public static boolean ExperimentStarted = false;

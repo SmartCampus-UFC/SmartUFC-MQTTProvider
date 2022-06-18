@@ -1,6 +1,8 @@
 package br.ufc.smartufc.mqttprovider.model;
 
-public class TDSensor extends Sensor {
+import java.util.Objects;
+
+public class TDSensor extends Device {
 	private int numberOfDevices;
 	private int periodicity;
 	private String[] data;
@@ -11,21 +13,26 @@ public class TDSensor extends Sensor {
 
 	}
 
-	public TDSensor(String type, String topic, int numberOfDevices) {
-		this.type = type;
-		this.topic = topic;
-		this.numberOfDevices = numberOfDevices;
-	}
-	
-	public TDSensor(String type, String topic, int numberOfDevices, int periodicity,String[] data, String[] max, String[] min) {
-		this.type = type;
-		this.topic = topic;
-		this.numberOfDevices = numberOfDevices;
-		this.periodicity = periodicity;
-		this.data = data;
-		this.max = max;
-		this.min = min;
-	}
+	/*
+	 * public TDSensor(String type, String topic, int numberOfDevices) {
+	 * this.type = type;
+	 * this.topic = topic;
+	 * this.numberOfDevices = numberOfDevices;
+	 * }
+	 */
+
+	/*
+	 * public TDSensor(String type, String topic, int numberOfDevices, int
+	 * periodicity,String[] data, String[] max, String[] min) {
+	 * this.type = type;
+	 * this.topic = topic;
+	 * this.numberOfDevices = numberOfDevices;
+	 * this.periodicity = periodicity;
+	 * this.data = data;
+	 * this.max = max;
+	 * this.min = min;
+	 * }
+	 */
 
 	public int getPeriodicity() {
 		return periodicity;
@@ -65,6 +72,35 @@ public class TDSensor extends Sensor {
 
 	public void setNumberOfDevices(int numberOfDevices) {
 		this.numberOfDevices = numberOfDevices;
+	}
+
+	@Override
+	public String toString() {
+		return "{" +
+				" numberOfDevices='" + getNumberOfDevices() + "'" +
+				", periodicity='" + getPeriodicity() + "'" +
+				", data='" + getData() + "'" +
+				", max='" + getMax() + "'" +
+				", min='" + getMin() + "'" +
+				"}";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof TDSensor)) {
+			return false;
+		}
+		TDSensor tDSensor = (TDSensor) o;
+		return numberOfDevices == tDSensor.numberOfDevices && periodicity == tDSensor.periodicity
+				&& Objects.equals(data, tDSensor.data) && Objects.equals(max, tDSensor.max)
+				&& Objects.equals(min, tDSensor.min);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numberOfDevices, periodicity, data, max, min);
 	}
 
 }

@@ -1,0 +1,3 @@
+﻿commands;apiKey;deviceId;periodicity;defaultState
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59oo;lamp001001001;3;0
+lock:LOCKED,unlock:UNLOCKED;scggokgpepnvsb2uv4s40d59oo;door001001001;3;0

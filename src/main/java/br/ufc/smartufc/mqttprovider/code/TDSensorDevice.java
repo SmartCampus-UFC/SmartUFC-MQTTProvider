@@ -7,32 +7,33 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-public class TimeDrivenSensor extends GenericSensor implements Runnable, MqttCallback {
+import br.ufc.smartufc.mqttprovider.util.Param;
+
+public class TDSensorDevice extends GenericDevice {
 
 	private final int nSensors;
 	private LinkedList<Sensor> sensor = new LinkedList<>();
 	IdController idController = new IdController();
 
-	public TimeDrivenSensor(String sensorType, int number_of_sensors, String topic, CountDownLatch latch) {
-		super(sensorType, topic, latch);
+	public TDSensorDevice(String sensorType, int number_of_sensors, String topic, CountDownLatch latch) {
+		super(sensorType, topic, null, latch);
 		this.duration = setSensorPeriodicity(sensorType) * 1000 * 60;
 		this.nSensors = number_of_sensors;
 	}
 
-	public TimeDrivenSensor(String sensorType, String[] messageType, int duration, int number_of_sensors, String topic,
+	public TDSensorDevice(String sensorType, String[] messageType, int duration, int number_of_sensors, String topic,
 			CountDownLatch latch) {
-		super(sensorType, messageType, duration, topic, latch);
+		super(sensorType, messageType, duration, topic, null, latch);
 		this.duration = duration * 1000;
 		this.nSensors = number_of_sensors;
 
 	}
 
-	public TimeDrivenSensor(String sensorType, String[] messageType, String[] max, String[] min, int duration,
+	public TDSensorDevice(String sensorType, String[] messageType, String[] max, String[] min, int duration,
 			int number_of_sensors, String topic, CountDownLatch latch) {
-		super(sensorType, messageType, max, min, duration, topic, latch);
+		super(sensorType, messageType, max, min, duration, topic, null, latch);
 		this.idController.setId();
 		this.duration = duration * 1000;
 		this.nSensors = number_of_sensors;
@@ -47,7 +48,7 @@ public class TimeDrivenSensor extends GenericSensor implements Runnable, MqttCal
 		try {
 			this.publish();
 		} catch (IOException ex) {
-			Logger.getLogger(TimeDrivenSensor.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -163,7 +164,7 @@ public class TimeDrivenSensor extends GenericSensor implements Runnable, MqttCal
 				// System.out.println(timeH);
 				System.out.println(m);
 				// MessageArray.setMsg(m, new Date(System.currentTimeMillis()), this.topic);
-				client.publish(this.topic, m.getBytes(), Param.qos, false);
+				client.publish(this.topicPub, m.getBytes(), Param.qos, false);
 				// if (Param.writeFile) {
 				// System.out.println("WRITE ON FILE:"+m);
 				// writeFile(m, time, numberOfMsg);
@@ -186,13 +187,13 @@ public class TimeDrivenSensor extends GenericSensor implements Runnable, MqttCal
 				}
 			} while (!(TimeControl.isDone()) && !isAbort);
 		} catch (MqttException ex) {
-			Logger.getLogger(TimeDrivenSensor.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 		try {
 			client.disconnect(); // problema?
 		} catch (MqttException ex) {
-			Logger.getLogger(TimeDrivenSensor.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		latch.countDown();
 	}

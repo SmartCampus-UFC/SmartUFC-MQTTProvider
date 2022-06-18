@@ -1,6 +1,6 @@
 package br.ufc.smartufc.mqttprovider.model;
 
-public class EDSensor extends Sensor {
+public class EDSensor extends Device {
 	private int lambda;
 	private int duration;
 	private String mode;
@@ -30,21 +30,21 @@ public class EDSensor extends Sensor {
 
 	}
 
-	public EDSensor(String type, String topic, int lambda, int duration) {
+	/*public EDSensor(String type, String topic, int lambda, int duration) {
 		this.type = type;
 		this.topic = topic;
 		this.lambda = lambda;
 		this.duration= duration;
-	}
+	}*/
 
-	public EDSensor(String type, String topic, int lambda, String[] data, String[] max, String[] min) {
+	/*public EDSensor(String type, String topic, int lambda, String[] data, String[] max, String[] min) {
 		this.type = type;
 		this.topic = topic;
 		this.lambda = lambda;
 		this.data = data;
 		this.max = max;
 		this.min = min;
-	}
+	}*/
 
 
 

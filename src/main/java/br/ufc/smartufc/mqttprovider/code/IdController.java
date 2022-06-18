@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import br.ufc.smartufc.mqttprovider.util.Param;
+
 public class IdController {
 	private static int id_air = 1;
 	private static int id_traffic = 1;
