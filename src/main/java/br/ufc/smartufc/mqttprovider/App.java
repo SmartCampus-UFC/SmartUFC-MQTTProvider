@@ -21,11 +21,17 @@ public class App
 {
     public static void main( String[] args ) throws IOException
     {    	
-    	
-		String mosquitto_host = "localhost";//System.getenv("MOSQUITTO_HOST");
-    	String mosquitto_port = "1883";//System.getenv("MOSQUITTO_PORT");
-    	Param.address = "tcp://"+mosquitto_host+":"+mosquitto_port;
-		Param.time_of_experiment = 60;
+		String mosquitto_host = System.getenv("MOSQUITTO_HOST");
+		if (mosquitto_host != null) {
+			String mosquitto_port = System.getenv("MOSQUITTO_PORT");
+			if (mosquitto_port != null) {
+				Param.address = "tcp://"+mosquitto_host+":"+mosquitto_port;
+			}
+		}
+		
+		if (System.getenv("MQTTPROVIDER_TIME") != null) {
+			Param.time_of_experiment = Integer.parseInt(System.getenv("MQTTPROVIDER_TIME"));
+		}
     	
     	CSVParser parser = new CSVParserBuilder().withSeparator(';').withIgnoreQuotations(true).build();    	
     	Reader readerTDSensors = Files.newBufferedReader(Paths.get("csv/tdsensors.csv"));
