@@ -30,7 +30,7 @@ public class App
 		}
 		
 		if (System.getenv("MQTTPROVIDER_TIME") != null) {
-			Param.time_of_experiment = Integer.parseInt(System.getenv("MQTTPROVIDER_TIME"));
+			Param.time_of_experiment = Long.parseLong(System.getenv("MQTTPROVIDER_TIME"));
 		}
     	
     	CSVParser parser = new CSVParserBuilder().withSeparator(';').withIgnoreQuotations(true).build();    	

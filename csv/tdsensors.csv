@@ -1,3 +1,5 @@
 ﻿type;apiKey;deviceId;periodicity;num_devices;data_type;max;min
-t;scggokgpepnvsb2uv4s40d59oo;temperatureSensor001001001;3;1;int;35;15
-h;scggokgpepnvsb2uv4s40d59oo;temperatureSensor001001001;3;1;int;85;80
+t;scggokgpepnvsb2uv4s40d59o1;temperatureSensor001001001;15;1;int;35;15
+h;scggokgpepnvsb2uv4s40d59o1;temperatureSensor001001001;15;1;int;85;80
+t;scggokgpepnvsb2uv4s40d59o1;temperatureSensor001002001;15;1;int;35;15
+h;scggokgpepnvsb2uv4s40d59o1;temperatureSensor001002001;15;1;int;85;80

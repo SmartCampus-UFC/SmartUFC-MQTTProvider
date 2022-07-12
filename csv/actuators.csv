@@ -1,3 +1,9 @@
 ﻿commands;apiKey;deviceId;periodicity;defaultState
-on:ON,off:OFF;scggokgpepnvsb2uv4s40d59oo;lamp001001001;3;0
-lock:LOCKED,unlock:UNLOCKED;scggokgpepnvsb2uv4s40d59oo;door001001001;3;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o3;lamp001001001;15;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o3;lamp001001002;15;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o3;lamp001002001;15;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o3;lamp001002002;15;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o2;airConditioner001001001;15;0
+on:ON,off:OFF;scggokgpepnvsb2uv4s40d59o2;airConditioner001002001;15;0
+lock:LOCKED,unlock:UNLOCKED;scggokgpepnvsb2uv4s40d59o4;door001001001;15;0
+lock:LOCKED,unlock:UNLOCKED;scggokgpepnvsb2uv4s40d59o4;door001002001;15;0
