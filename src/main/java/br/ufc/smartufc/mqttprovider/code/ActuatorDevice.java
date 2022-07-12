@@ -14,6 +14,8 @@ import br.ufc.smartufc.mqttprovider.util.Param;
 public class ActuatorDevice extends GenericDevice {
 
 	private String state;
+	private String response;
+	private boolean hasResponse;
 	private HashMap<String,String> commands;
 
 	public ActuatorDevice(String sensorType, HashMap<String,String> commands, String defaultState, int duration, String topicPub, String topicSub,
@@ -21,7 +23,8 @@ public class ActuatorDevice extends GenericDevice {
 		super(sensorType, duration, topicPub, topicSub, latch);
 		this.duration = duration * 1000;
 		this.commands = commands;
-		this.state = defaultState;		
+		this.state = defaultState;
+		this.hasResponse = false;		
 	}
 
 	@Override
@@ -45,8 +48,8 @@ public class ActuatorDevice extends GenericDevice {
 		try {
 			if (client == null)
 				this.connectMQTT();				
-			// if (!client.isConnected())
-			// 	client.connect();			
+			//if (!client.isConnected())
+				//client.connect();			
 			try {
 				Thread.sleep(RandomController.nextInt(this.duration));
 			} catch (InterruptedException e1) {
@@ -55,22 +58,28 @@ public class ActuatorDevice extends GenericDevice {
 			}
 			client.subscribe(this.topicSub);							
 			do {
-				m = this.setSensorInfo();
+				if (!this.hasResponse) {
+					m = this.setSensorInfo();
+				} else {
+					m = this.response;
+					this.hasResponse = false;
+				}					
 				System.out.println(m);
 				client.publish(this.topicPub, m.getBytes(), Param.qos, false);
 				try {					
 					Thread.sleep(this.duration);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
+				}	
 			} while (!(TimeControl.isDone()) && !isAbort);
 		} catch (MqttException ex) {
+			//ex.printStackTrace();
 			Logger.getLogger(ActuatorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		try {
 			client.disconnect(); // problema?
 		} catch (MqttException ex) {
-			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(ActuatorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		latch.countDown();
 	}
@@ -93,6 +102,8 @@ public class ActuatorDevice extends GenericDevice {
 			response = msg + " | NOT_EXIST";
 		}
 		System.out.println("Response: \t" + response);
-		client.publish(this.topicPub, response.getBytes(), Param.qos, false);
+		this.response = response;
+		this.hasResponse = true;
+		//client.publish(this.topicPub, response.getBytes(), Param.qos, false);
 	}
 }
