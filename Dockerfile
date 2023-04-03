@@ -1,6 +1,9 @@
-FROM openjdk:8-jre
-RUN mkdir -p app/csv
-COPY ./target /app
-COPY ./csv /app/csv
-WORKDIR /app
+FROM maven:latest
+RUN mkdir -p /app/src
+COPY ./src /app/src
+COPY ./pom.xml /app/pom.xml
+RUN mvn -f /app/pom.xml clean package
+RUN mkdir -p /app/target/csv
+COPY ./csv /app/target/csv
+WORKDIR /app/target
 ENTRYPOINT java -jar mqttprovider.jar
