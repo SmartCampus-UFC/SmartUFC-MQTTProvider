@@ -6,4 +6,4 @@ RUN mvn -f /app/pom.xml clean package
 RUN mkdir -p /app/target/csv
 COPY ./csv /app/target/csv
 WORKDIR /app/target
-ENTRYPOINT java -jar mqttprovider.jar
+#CMD ["java","-jar","mqttprovider.jar"]
