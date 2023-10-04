@@ -14,6 +14,7 @@ import com.opencsv.CSVReaderBuilder;
 
 import br.ufc.smartufc.mqttprovider.code.MqttPubSub;
 import br.ufc.smartufc.mqttprovider.model.Actuator;
+import br.ufc.smartufc.mqttprovider.model.MobileSensor;
 import br.ufc.smartufc.mqttprovider.model.TDSensor;
 import br.ufc.smartufc.mqttprovider.util.Param;
 
@@ -37,13 +38,16 @@ public class App
     	Reader readerTDSensors = Files.newBufferedReader(Paths.get("csv/tdsensors.csv"));
     	//Reader readerEDSensors = Files.newBufferedReader(Paths.get("csv/edsensors.csv"));
 		Reader readerActuators = Files.newBufferedReader(Paths.get("csv/actuators.csv"));
+		Reader readerMobileSensors= Files.newBufferedReader(Paths.get("csv/mdsensors.csv"));
         CSVReader csvReaderTDSensors = new CSVReaderBuilder(readerTDSensors).withSkipLines(1).withCSVParser(parser).build();
         //CSVReader csvReaderEDSensors = new CSVReaderBuilder(readerEDSensors).withSkipLines(1).withCSVParser(parser).build();
-		CSVReader csvReaderActuators = new CSVReaderBuilder(readerActuators).withSkipLines(1).withCSVParser(parser).build();     	
+		CSVReader csvReaderActuators = new CSVReaderBuilder(readerActuators).withSkipLines(1).withCSVParser(parser).build(); 
+		CSVReader csvReaderMobileSensors = new CSVReaderBuilder(readerMobileSensors).withSkipLines(1).withCSVParser(parser).build();  
     	
         List<String[]> tdSensors = csvReaderTDSensors.readAll();
         //List<String[]> edSensors = csvReaderEDSensors.readAll();
 		List<String[]> actuators = csvReaderActuators.readAll();
+		List<String[]> mobileSensors = csvReaderMobileSensors.readAll();
         
 		TDSensor[] tdSensorArray = null;
 		if (tdSensors.size()>0) {
@@ -99,7 +103,24 @@ public class App
 				index++;
 				a = new Actuator();
 			}
+		}  
+		
+		MobileSensor[] mobileArray = null;
+		if (mobileSensors.size()>0) {
+			mobileArray = new MobileSensor[mobileSensors.size()];        
+			int index = 0; 
+			MobileSensor m = new MobileSensor();
+			for (String[] mobileSensor : mobileSensors) {
+				m.setType(mobileSensor[0]);
+				m.setApiKey(mobileSensor[1]);
+				m.setDeviceId(mobileSensor[2]);
+				
+				mobileArray[index] = m;
+				index++;
+				m = new MobileSensor();
+			}
 		}  		
+
 
         System.out.println("RUN!! Sending to ip " + Param.address);
 		System.out.println("Time of experiment (in seconds): " + Param.time_of_experiment);
@@ -107,6 +128,7 @@ public class App
 		MqttPubSub mqttp = new MqttPubSub();
 		mqttp.setTimeSensors(tdSensorArray);
 		mqttp.setActuators(actuatorArray);
+		mqttp.setMobileSensors(mobileArray);
 		Thread threadDoPdf = new Thread(mqttp);
         threadDoPdf.start();    
 		

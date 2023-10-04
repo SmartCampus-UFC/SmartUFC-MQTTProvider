@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import br.ufc.smartufc.mqttprovider.model.Actuator;
 import br.ufc.smartufc.mqttprovider.model.EDSensor;
 import br.ufc.smartufc.mqttprovider.model.TDSensor;
+import br.ufc.smartufc.mqttprovider.model.MobileSensor;
 import br.ufc.smartufc.mqttprovider.util.Param;
 import br.ufc.smartufc.mqttprovider.util.TopicGenerator;
 
@@ -15,6 +16,7 @@ public class MqttPubSub implements Runnable {
 	private TDSensor[] timeSensors;
 	private EDSensor[] eventSensors;
 	private Actuator[] actuators;
+	private MobileSensor[] mobileSensors;
 	private ArrayList<Thread> threads = new ArrayList<Thread>();
 
 	// TODO permitir instanciar até x sensores genéricos
@@ -109,6 +111,18 @@ public class MqttPubSub implements Runnable {
 		threads.add(thread);
 		thread.start();
 	}
+	
+	private void setMobileSensorsDevice(MobileSensor mobileSensor, CountDownLatch latch) {
+		String topic = TopicGenerator.getPublishTopic(mobileSensor.getApiKey(), mobileSensor.getDeviceId());
+		//Provisorio
+		String[] messageType = new String[1];
+		//
+		messageType[0] = "";
+		MobileSensorDevice newSensor= new MobileSensorDevice(mobileSensor.getDeviceId(), "traffic", messageType, 1000, 1, topic, latch);
+		Thread thread = new Thread(newSensor);
+		threads.add(thread);
+		thread.start();
+	}
 
 	// Event Driven Sensors, each thread represents a event (ex: a football
 	// match)
@@ -154,6 +168,9 @@ public class MqttPubSub implements Runnable {
 		threads.add(thread);
 		thread.start();
 	}
+	
+	
+
 
 	public void start() {
 		// System.out.println(Param.experiment_num + " is going to start in " +
@@ -188,6 +205,18 @@ public class MqttPubSub implements Runnable {
 				}
 				setActuatorDevices(actuator, latch);
 			}
+		}if (mobileSensors != null) {
+			MobileSensor mobileSensor = new MobileSensor();
+			for (int i = 0; i < mobileSensors.length; i++) {
+				mobileSensor = mobileSensors[i];
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				setMobileSensorsDevice(mobileSensor, latch);
+			}
 		}
 		try {
 			latch.await(); // main thread is waiting on CountDownLatch to finish
@@ -212,6 +241,7 @@ public class MqttPubSub implements Runnable {
 		// MessageArray.clean();
 	}
 
+	
 	@SuppressWarnings("deprecation")
 	public void abort() {
 		// TimeControl.s
@@ -246,6 +276,14 @@ public class MqttPubSub implements Runnable {
 
 	public void setActuators(Actuator[] actuators) {
 		this.actuators = actuators;
+	}
+	
+	public MobileSensor[] getMobileSensors() {
+		return this.mobileSensors;
+	}
+
+	public void setMobileSensors(MobileSensor[] mobileSensors) {
+		this.mobileSensors = mobileSensors;
 	}
 
 }
