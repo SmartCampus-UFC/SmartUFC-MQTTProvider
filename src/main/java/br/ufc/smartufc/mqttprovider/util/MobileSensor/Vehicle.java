@@ -62,7 +62,6 @@ public class Vehicle{
                     }
                 }
             }
-            System.out.println("ifasoiasdjo");
             this.timestepCounter += this.step;
             if(timestepCounter == 1092.0)
             	timestepCounter = 0;
