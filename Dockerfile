@@ -13,5 +13,6 @@ FROM openjdk:14
 COPY --from=build /app /app
 RUN mkdir -p /app/target/csv
 COPY ./csv /app/target/csv
+COPY ./sumoFiles /app/target/sumoFiles
 WORKDIR /app/target
 ENTRYPOINT ["java","-jar","mqttprovider.jar"]

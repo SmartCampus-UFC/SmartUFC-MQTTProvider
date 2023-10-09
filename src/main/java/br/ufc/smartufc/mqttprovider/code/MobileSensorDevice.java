@@ -23,7 +23,7 @@ public class MobileSensorDevice extends GenericDevice{
 		super(sensorType, messageType, duration, topic, null, latch);
 		this.deviceId = deviceId;
 		//Can use periodicity as step
-		this.vehicle = new Vehicle(mobileId,20,periodicity,"src/main/java/br/ufc/smartufc/mqttprovider/util/MobileSensor/ufc-cenario/osmWithStop.xml");
+		this.vehicle = new Vehicle(mobileId,20,periodicity,"sumoFiles/osmWithStop.xml");
 		this.duration = duration * 1000;
 		this.nSensors = number_of_sensors;
 		
