@@ -75,18 +75,18 @@ public class MobileSensorDevice extends GenericDevice{
 	
 			do {
 			    // Update the vehicle's coordinates here
-				String m = "";
-				m += "g|";//sensorType+ deviceId+ "g|";
 				vehicle.updateCoordinates();
 			    if (vehicle.isPresent() == true) {
 			        
 			        double x = vehicle.getX();
 			        double y = vehicle.getY();
 			        //m += "(" + x + "," + y + ")"; // Format coordinates as (x,y)
-					m+="{\"type\": \"Point\", \"coordinates\": [" + x + ", " + y + "]}";
-			        System.out.println(m); // Output the coordinates
+					//m+="{\"type\": \"Point\", \"coordinates\": [" + x + ", " + y + "]}";
+					String m1 = "long|" + x+"|lat|" + y;
+			        System.out.println(m1); // Output the coordinates
+					client.publish(this.topicPub, m1.getBytes(), Param.qos, false);
 			    }
-			    client.publish(this.topicPub, m.getBytes(), Param.qos, false);
+			    
 			    
 			    try {
 			        Thread.sleep(timeToSleep);
