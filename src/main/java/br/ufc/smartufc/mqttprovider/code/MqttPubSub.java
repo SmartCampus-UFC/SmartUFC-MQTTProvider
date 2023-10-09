@@ -118,7 +118,7 @@ public class MqttPubSub implements Runnable {
 		String[] messageType = new String[1];
 		//
 		messageType[0] = "";
-		MobileSensorDevice newSensor= new MobileSensorDevice(mobileSensor.getDeviceId(), "traffic", messageType, 1000, 1, topic, latch);
+		MobileSensorDevice newSensor= new MobileSensorDevice(mobileSensor.getDeviceId(),mobileSensor.getMobileId(),mobileSensor.getPeriodicity(), "traffic", messageType, 1000, 1, topic, latch);
 		Thread thread = new Thread(newSensor);
 		threads.add(thread);
 		thread.start();

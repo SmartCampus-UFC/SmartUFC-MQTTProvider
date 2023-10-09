@@ -7,7 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.MqttException;
-
 import br.ufc.smartufc.mqttprovider.util.Param;
 import br.ufc.smartufc.mqttprovider.util.MobileSensor.Vehicle;
 
@@ -19,12 +18,12 @@ public class MobileSensorDevice extends GenericDevice{
 	private String deviceId;
 	private Vehicle vehicle;
 
-	public MobileSensorDevice(String deviceId, String sensorType, String[] messageType, int duration, int number_of_sensors, String topic,
+	public MobileSensorDevice(String deviceId, String mobileId, int periodicity,String sensorType, String[] messageType, int duration, int number_of_sensors, String topic, 
 			CountDownLatch latch) {
 		super(sensorType, messageType, duration, topic, null, latch);
 		this.deviceId = deviceId;
 		//Can use periodicity as step
-		this.vehicle = new Vehicle(this.deviceId,20,2,"src/main/java/br/ufc/smartufc/mqttprovider/util/MobileSensor/ufc-cenario/osmWithStop.xml");
+		this.vehicle = new Vehicle(mobileId,20,periodicity,"src/main/java/br/ufc/smartufc/mqttprovider/util/MobileSensor/ufc-cenario/osmWithStop.xml");
 		this.duration = duration * 1000;
 		this.nSensors = number_of_sensors;
 		
@@ -77,13 +76,14 @@ public class MobileSensorDevice extends GenericDevice{
 			do {
 			    // Update the vehicle's coordinates here
 				String m = "";
-				m += sensorType+ deviceId+ "|";
+				m += "g|";//sensorType+ deviceId+ "g|";
 				vehicle.updateCoordinates();
 			    if (vehicle.isPresent() == true) {
 			        
 			        double x = vehicle.getX();
 			        double y = vehicle.getY();
-			        m += "(" + x + "," + y + ")"; // Format coordinates as (x,y)
+			        //m += "(" + x + "," + y + ")"; // Format coordinates as (x,y)
+					m+="{\"type\": \"Point\", \"coordinates\": [" + x + ", " + y + "]}";
 			        System.out.println(m); // Output the coordinates
 			    }
 			    client.publish(this.topicPub, m.getBytes(), Param.qos, false);

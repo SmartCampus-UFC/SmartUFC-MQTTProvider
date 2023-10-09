@@ -114,6 +114,8 @@ public class App
 				m.setType(mobileSensor[0]);
 				m.setApiKey(mobileSensor[1]);
 				m.setDeviceId(mobileSensor[2]);
+				m.setMobileId(mobileSensor[3]);
+				m.setPeriodicity(Integer.parseInt(mobileSensor[4]));
 				
 				mobileArray[index] = m;
 				index++;
