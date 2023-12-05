@@ -1,0 +1,47 @@
+version: "3.5"
+services:
+  mqttprovider:
+    build: ./app
+    image: mqttprovider:v1.0
+    hostname: mqttprovider
+    container_name: mqttprovider
+    volumes:
+      - ./app/upload-dir:/app/target/upload-dir
+    environment:
+      DB_HOSTNAME: "postgres"
+      DB_PORT: 5432
+      DB_DATABASE: "mqttproviderdb"
+      DB_USER: "postgres"
+      DB_PASS: "mysecretpassword"
+    networks:
+      - mqtt-net
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    hostname: postgres
+    container_name: postgres
+    volumes:
+      - ./sql/mqttproviderdb.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+    environment:
+      POSTGRES_PASSWORD: "mysecretpassword"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "mqttproviderdb"
+    networks:
+      - mqtt-net
+    ports:
+      - "5432:5432"
+  
+networks:
+  mqtt-net:
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+volumes:
+  capture-detection-data: ~
+  filter-data: ~
+  ocr-data: ~
