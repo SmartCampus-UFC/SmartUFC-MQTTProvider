@@ -25,7 +25,7 @@ services:
     hostname: postgres
     container_name: postgres
     volumes:
-      - ./sql/mqttproviderdb.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+      - ./demo/mqttprovider-data/mqttproviderdb.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
     environment:
       POSTGRES_PASSWORD: "mysecretpassword"
       POSTGRES_USER: "postgres"
@@ -40,8 +40,3 @@ networks:
     ipam:
       config:
         - subnet: 192.168.100.0/24
-
-volumes:
-  capture-detection-data: ~
-  filter-data: ~
-  ocr-data: ~

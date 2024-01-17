@@ -1,0 +1,24 @@
+# config file version
+apiVersion: 1
+
+# list of datasources to insert/update depending
+# whats available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+  - id: 1
+    uid: 4tdQG6FIk
+    orgId: 1
+    name: CrateDB
+    type: postgres
+    typeName: PostgreSQL
+    typeLogoUrl: public/app/plugins/datasource/postgres/img/postgresql_logo.svg
+    access: proxy
+    url: crate-db:5432
+    user: crate
+    database: ''
+    basicAuth: false
+    isDefault: true
+    jsonData:
+      database: mtsmartufc
+      sslmode: disable
+    readOnly: false

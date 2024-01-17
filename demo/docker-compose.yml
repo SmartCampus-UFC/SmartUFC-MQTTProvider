@@ -1,0 +1,226 @@
+version: "3.5"
+services:
+  mqttprovider:
+    build: ../app
+    image: mqttprovider:v1.0
+    hostname: mqttprovider
+    container_name: mqttprovider
+    volumes:
+      - ../app/upload-dir:/app/target/upload-dir
+    environment:
+      DB_HOSTNAME: "postgres"
+      DB_PORT: 5433
+      DB_DATABASE: "mqttproviderdb"
+      DB_USER: "postgres"
+      DB_PASS: "mysecretpassword"
+    networks:
+      - site-net
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - orion
+      - mosquitto
+
+  postgres:
+    image: postgres
+    hostname: postgres
+    container_name: postgres
+    volumes:
+      - ./mqttprovider-data/mqttproviderdbV2.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+    environment:
+      POSTGRES_PASSWORD: "mysecretpassword"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "mqttproviderdb"
+    networks:
+      - site-net
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    command: -p 5433
+
+  # Orion is the context broker
+  orion:
+    image: quay.io/fiware/orion:${ORION_VERSION}
+    hostname: ${ORION_HOST}
+    container_name: fiware-orion
+    depends_on:
+      - mongo-db
+    networks:
+      - site-net
+    expose:
+      - "${ORION_PORT}"
+    ports:
+      - "${ORION_PORT}:${ORION_PORT}" # localhost:1026
+    command: -dbhost ${MONGO_DB_HOST} -logLevel ${LOG_LEVEL}
+    healthcheck:
+      test: curl --fail -s http://${ORION_HOST}:${ORION_PORT}/version || exit 1
+      interval: 5s
+
+  # Quantum Leap is persisting Short Term History to Crate-DB
+  quantumleap:
+    image: orchestracities/quantumleap:${QUANTUMLEAP_VERSION}
+    hostname: ${QUANTUMLEAP_HOST}
+    container_name: fiware-quantumleap
+    networks:
+      - site-net
+    ports:
+      - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
+    depends_on:
+      - crate-db
+      - redis-db
+    environment:
+      - CRATE_HOST=${CRATE_HOST}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - LOGLEVEL=${LOG_LEVEL}
+    healthcheck:
+      test: curl --fail -s http://${QUANTUMLEAP_HOST}:${QUANTUMLEAP_PORT}/version || exit 1
+
+  # IoT-Agent is configured for the UltraLight Protocol
+  iot-agent:
+    image: quay.io/fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    hostname: ${IOTA_HOST}
+    container_name: fiware-iot-agent
+    depends_on:
+      - orion
+      - mosquitto
+    networks:
+      - site-net
+    expose:
+      - "${IOTA_NORTH_PORT}"
+    ports:
+      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # localhost:4041
+    environment:
+      - IOTA_CB_HOST=${ORION_HOST} # name of the context broker to update context
+      - IOTA_CB_PORT=${ORION_PORT} # port the context broker listens on to update context
+      - IOTA_NORTH_PORT=${IOTA_NORTH_PORT}
+      - IOTA_REGISTRY_TYPE=mongodb #Whether to hold IoT device info in memory or in a database
+      - IOTA_LOG_LEVEL=${LOG_LEVEL} # The log level of the IoT Agent
+      - IOTA_TIMESTAMP=true # Supply timestamp information with each measurement
+      - IOTA_CB_NGSI_VERSION=v2 # use NGSIv2 when sending updates for active attributes
+      - IOTA_AUTOCAST=true # Ensure Ultralight number values are read as numbers not strings
+      - IOTA_MONGO_HOST=${MONGO_DB_HOST} # The host name of MongoDB
+      - IOTA_MONGO_PORT=${MONGO_DB_PORT} # The port mongoDB is listening on
+      - IOTA_MONGO_DB=iotagentul # The name of the database used in mongoDB
+      - IOTA_MQTT_HOST=${MOSQUITTO_HOST} # The host name of the MQTT Broker
+      - IOTA_MQTT_PORT=1883 # The port the MQTT Broker is listening on to receive topics
+      - IOTA_MQTT_KEEPALIVE=60
+      - IOTA_DEFAULT_RESOURCE= # Default is blank. I'm using MQTT so I don't need a resource
+      - IOTA_PROVIDER_URL=http://${IOTA_HOST}:${IOTA_NORTH_PORT}
+    healthcheck:
+      interval: 5s
+
+  # Database
+  mongo-db:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: ${MONGO_DB_HOST}
+    container_name: db-mongo
+    expose:
+      - "${MONGO_DB_PORT}"
+    ports:
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017
+    networks:
+      - site-net
+    volumes:
+      - mongo-db:/data
+    healthcheck:
+      test: [ "CMD", "mongo", "--quiet", "127.0.0.1/test", "--eval", "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"]
+      interval: 5s
+
+  crate-db:
+    image: crate:${CRATE_VERSION}
+    hostname: ${CRATE_HOST}
+    container_name: db-crate
+    networks:
+      - site-net
+    ports:
+      # Admin UI
+      - "4200:4200"
+      # Transport protocol
+      - "4300:4300"
+      - "5432:5432"
+    command: crate -Cauth.host_based.enabled=false  -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
+    environment:
+      - CRATE_HEAP_SIZE=2g # see https://crate.io/docs/crate/howtos/en/latest/deployment/containers/docker.html#troubleshooting
+    volumes:
+      - crate-db:/data
+
+  redis-db:
+    image: redis:${REDIS_VERSION}
+    hostname: ${REDIS_HOST}
+    container_name: db-redis
+    networks:
+      - site-net
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}" # localhost:6379
+    volumes:
+      - redis-db:/data
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 10s
+
+  # Mosquitto
+  mosquitto:
+    image: eclipse-mosquitto:1.6.14
+    hostname: ${MOSQUITTO_HOST}
+    container_name: mosquitto
+    expose:
+      - "${MOSQUITTO_PORT}"
+      - "9001"
+    ports:
+      - "${MOSQUITTO_PORT}:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - site-net
+
+  grafana:
+    image: grafana/grafana:9.4.7
+    container_name: grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - crate-db
+    env_file:
+      - ./grafana/grafana.env
+    environment:
+      - GF_INSTALL_PLUGINS=orchestracities-map-panel,grafana-clock-panel,grafana-worldmap-panel
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/plugins:/var/lib/grafana/plugins
+    networks:
+      - site-net
+
+  curl-client:
+    image: curlimages/curl
+    container_name: curl-client
+    env_file:
+      - .env
+    volumes:
+      - ./fiware-data/entities.sh:/entities.sh
+    entrypoint: /bin/ash
+    command: /entities.sh
+    depends_on:
+      orion:
+        condition: service_healthy
+      quantumleap:
+        condition: service_healthy
+      iot-agent:
+        condition: service_healthy
+    networks:
+      - site-net
+
+networks:
+  site-net:
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+volumes:
+  mongo-db: ~
+  crate-db: ~
+  redis-db: ~
+  grafana: ~

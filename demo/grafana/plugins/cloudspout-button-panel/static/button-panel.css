@@ -1,0 +1,1 @@
+@keyframes spin{0%{transform:scale(1) rotate(0deg)}to{transform:scale(1) rotate(1turn)}}.spinning>*>:first-child{animation:spin 1s linear infinite}.center{align-items:center;display:flex;justify-content:center}.left{float:left}.right{float:right}
