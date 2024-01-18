@@ -4,9 +4,8 @@ apiVersion: 1
 # list of datasources to insert/update depending
 # whats available in the database
 datasources:
-  # <string, required> name of the datasource. Required
   - id: 1
-    uid: 4tdQG6FIk
+    uid: P0DE374AC66335B6C
     orgId: 1
     name: CrateDB
     type: postgres
@@ -22,3 +21,23 @@ datasources:
       database: mtsmartufc
       sslmode: disable
     readOnly: false
+  - id: 2
+    uid: PBFA97CFB590B2093
+    orgId: 1
+    name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    basicAuth: false
+    basicAuthUser: admin
+    basicAuthPassword: foobar
+    jsonData:
+      graphiteVersion: "1.1"
+      tlsAuth: false
+      tlsAuthWithCACert: false
+    secureJsonData:
+      tlsCACert: "..."
+      tlsClientCert: "..."
+      tlsClientKey: "..."
+    version: 1
+    editable: true

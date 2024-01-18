@@ -35,7 +35,7 @@ public class DeviceView extends VerticalLayout {
 
         // form configuration
         crud.getCrudFormFactory().setUseBeanValidation(true);
-        crud.getCrudFormFactory().setVisibleProperties("deviceId","description","deviceGroup","actuators","tdSensors","edSensors","mobileSensors");
+        crud.getCrudFormFactory().setVisibleProperties("deviceId","description","instances","deviceGroup","actuators","tdSensors","edSensors","mobileSensors");
 
         crud.getCrudFormFactory().setFieldProvider("deviceGroup",
                 new ComboBoxProvider<>(deviceGroupService.findAll()));

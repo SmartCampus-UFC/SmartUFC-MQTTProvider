@@ -96,6 +96,7 @@ CREATE TABLE public.device (
     id bigint NOT NULL,
     version integer NOT NULL,
     description character varying(255),
+    instances integer NOT NULL default 1,
     device_id character varying(255),
     device_group_id bigint NOT NULL
 );

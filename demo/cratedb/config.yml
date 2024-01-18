@@ -1,0 +1,52 @@
+---
+jobs:
+  - name: "cratedb"
+    interval: '1m'
+    connections:
+      - 'postgres://crate@crate-db:5432?sslmode=disable'
+    queries:
+      - name: "shard_distribution"
+        help: "Number of shards per node"
+        labels: ["node_name"]
+        values: ["shards"]
+        query: |
+          SELECT node['name'] AS node_name, COUNT(*) AS shards
+          FROM sys.shards
+          GROUP BY 1;
+        allow_zero_rows: true
+
+      - name: "heap_usage"
+        help: "Used heap space per node"
+        labels: ["node_name"]
+        values: ["heap_used"]
+        query: |
+          SELECT name AS node_name, heap['used'] / heap['max']::DOUBLE AS heap_used
+          FROM sys.nodes;
+
+      - name: "global_translog"
+        help: "Global translog statistics"
+        values: ["translog_uncommitted_size"]
+        query: |
+          SELECT COALESCE(SUM(translog_stats['uncommitted_size']), 0) AS translog_uncommitted_size
+          FROM sys.shards;
+
+      - name: "checkpoints"
+        help: "Maximum global/local checkpoint delta"
+        values: ["max_checkpoint_delta"]
+        query: |
+          SELECT COALESCE(MAX(seq_no_stats['local_checkpoint'] - seq_no_stats['global_checkpoint']), 0) AS max_checkpoint_delta
+          FROM sys.shards;
+
+      - name: "shard_allocation_issues"
+        help: "Shard allocation issues"
+        labels: ["shard_type"]
+        values: ["shards"]
+        query: |
+          SELECT IF(s.primary = TRUE, 'primary', 'replica') AS shard_type, COALESCE(shards, 0) AS shards
+          FROM UNNEST([true, false]) s(primary)
+          LEFT JOIN (
+            SELECT primary, COUNT(*) AS shards
+            FROM sys.allocations
+            WHERE current_state <> 'STARTED'
+            GROUP BY 1
+          ) a ON s.primary = a.primary;

@@ -84,17 +84,18 @@ public class MainProvider {
 	private int calculateNumThreads(Set<Device> devices) {
 		int nThreads = 0;
 		for (Device device : devices) {
+			int nInstances = device.getInstances();
 			for (Actuator actuator : device.getActuators()) {
-				nThreads++;
+				nThreads+=nInstances;
 			}
 			for (TDSensor tdSensor : device.getTdSensors()) {
-				nThreads++;
+				nThreads+=nInstances;
 			}
 			for (EDSensor edSensor : device.getEdSensors()) {
-				nThreads++;
+				nThreads+=nInstances;
 			}
 			for (MobileSensor mobileSensor : device.getMobileSensors()) {
-				nThreads++;
+				nThreads+=nInstances;
 			}
 		}
 		return nThreads;
@@ -113,56 +114,57 @@ public class MainProvider {
 		String apiKey;
 
 		for (Device device : devices) {
-			deviceId = device.getDeviceId();
 			apiKey = device.getDeviceGroup().getApiKey();
-
-			for (Actuator actuator : device.getActuators()) {
-				actuator.setDeviceId(deviceId);
-				actuator.setApiKey(apiKey);
-				actuator.setNumberOfDevices(1);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			for (int i = 0; i < device.getInstances(); i++) {
+				deviceId = device.getDeviceId()+"I"+i;
+				for (Actuator actuator : device.getActuators()) {
+					actuator.setDeviceId(deviceId);
+					actuator.setApiKey(apiKey);
+					actuator.setNumberOfDevices(1);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					setActuatorDevices(actuator);//, executorService, latch);
 				}
-				setActuatorDevices(actuator);//, executorService, latch);
-			}
-			for (TDSensor tdSensor : device.getTdSensors()) {
-				tdSensor.setDeviceId(deviceId);
-				tdSensor.setApiKey(apiKey);
-				tdSensor.setNumberOfDevices(1);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				for (TDSensor tdSensor : device.getTdSensors()) {
+					tdSensor.setDeviceId(deviceId);
+					tdSensor.setApiKey(apiKey);
+					tdSensor.setNumberOfDevices(1);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					setTimeDrivenDevices(tdSensor);
 				}
-				setTimeDrivenDevices(tdSensor);
-			}
-			for (EDSensor edSensor : device.getEdSensors()) {
-				edSensor.setDeviceId(deviceId);
-				edSensor.setApiKey(apiKey);
-				//edSensor.setNumberOfDevices(1);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				for (EDSensor edSensor : device.getEdSensors()) {
+					edSensor.setDeviceId(deviceId);
+					edSensor.setApiKey(apiKey);
+					//edSensor.setNumberOfDevices(1);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					setEventDrivenDevices(edSensor);
 				}
-				setEventDrivenDevices(edSensor);
-			}
-			for (MobileSensor mobileSensor : device.getMobileSensors()) {
-				mobileSensor.setDeviceId(deviceId);
-				mobileSensor.setApiKey(apiKey);
-				mobileSensor.setNumberOfDevices(1);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				for (MobileSensor mobileSensor : device.getMobileSensors()) {
+					mobileSensor.setDeviceId(deviceId);
+					mobileSensor.setApiKey(apiKey);
+					mobileSensor.setNumberOfDevices(1);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					setMobileSensorsDevice(mobileSensor);
 				}
-				setMobileSensorsDevice(mobileSensor);
 			}
 		}
 

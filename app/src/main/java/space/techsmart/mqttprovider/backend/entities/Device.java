@@ -26,6 +26,9 @@ public class Device extends AbstractEntity{
     @NotEmpty
     private String description;
 
+    @NotNull
+    private Integer instances = 1;
+
     @ManyToOne
     @NotNull
     private DeviceGroup deviceGroup;
