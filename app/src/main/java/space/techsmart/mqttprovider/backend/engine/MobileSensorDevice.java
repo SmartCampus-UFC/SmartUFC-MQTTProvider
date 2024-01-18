@@ -35,7 +35,6 @@ public class MobileSensorDevice extends GenericDevice {
 
 	
 	private void initializeSensors() {
-		System.out.println("A duração do sensor " + this.key + " é " + this.duration);
 		for (int i = 0; i < nSensors; i++) {
 			Sensor s1 = new Sensor();
 			s1.setDuration(duration);
@@ -48,9 +47,6 @@ public class MobileSensorDevice extends GenericDevice {
 
 	@Override
 	public void run() {
-		System.out.println(
-				key + " sends a message  in each " + duration + " ms. We will generate " + nSensors + "\n");
-		// random.setSeed(Param.seed);
 		this.initializeSensors();
 		try {
 			this.publish();
@@ -82,9 +78,7 @@ public class MobileSensorDevice extends GenericDevice {
 			        
 			        double x = vehicle.getX();
 			        double y = vehicle.getY();
-			        //m += "(" + x + "," + y + ")"; // Format coordinates as (x,y)
-					//m+="{\"type\": \"Point\", \"coordinates\": [" + x + ", " + y + "]}";
-					String m1 = "long|" + x+"|lat|" + y;
+			        String m1 = "long|" + x+"|lat|" + y;
 			        System.out.println(m1); // Output the coordinates
 					client.publish(this.topicPub, m1.getBytes(), Param.qos, false);
 			    }
@@ -94,7 +88,6 @@ public class MobileSensorDevice extends GenericDevice {
 			    } catch (InterruptedException e) {
 			        e.printStackTrace();
 			    }
-			//} while (!(TimeControl.isDone()) && !isAbort);
 			} while (latch.getCount() != 0);
 	    } catch (MqttException ex) {
 			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,6 +98,5 @@ public class MobileSensorDevice extends GenericDevice {
 	    } catch (MqttException ex) {
 	        Logger.getLogger(MobileSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 	    }
-	    //latch.countDown();
 	}
 }

@@ -95,7 +95,7 @@ public class EDSensorDevice extends GenericDevice {
 			if (latch.getCount() == 0) break;
 		}
 		try {
-			client.disconnect(); // problema?
+			client.disconnect();
 		} catch (MqttException ex) {
 			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}

@@ -28,8 +28,6 @@ public class ActuatorDevice extends GenericDevice {
 
 	@Override
 	public void run() {
-		//System.out.println(
-				//sensorType + " sends a message  in each " + duration + " ms. \n");
 		try {
 			this.start();
 		} catch (IOException ex) {
@@ -47,8 +45,6 @@ public class ActuatorDevice extends GenericDevice {
 		try {
 			if (client == null)
 				this.connectMQTT();				
-			//if (!client.isConnected())
-				//client.connect();			
 			try {
 				Thread.sleep(RandomController.nextInt(this.duration));
 			} catch (InterruptedException e1) {
@@ -63,21 +59,19 @@ public class ActuatorDevice extends GenericDevice {
 					m = this.response;
 					this.hasResponse = false;
 				}					
-				//System.out.println(m);
 				client.publish(this.topicPub, m.getBytes(), Param.qos, false);
 				try {					
 					Thread.sleep(this.duration);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}	
-			//} while (!(TimeControl.isDone()) && !isAbort);
 			} while (latch.getCount() != 0);
 		} catch (MqttException ex) {
 			//ex.printStackTrace();
 			Logger.getLogger(ActuatorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		try {
-			client.disconnect(); // problema?
+			client.disconnect();
 		} catch (MqttException ex) {
 			Logger.getLogger(ActuatorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -104,6 +98,5 @@ public class ActuatorDevice extends GenericDevice {
 		System.out.println("Response: \t" + response);
 		this.response = response;
 		this.hasResponse = true;
-		//client.publish(this.topicPub, response.getBytes(), Param.qos, false);
 	}
 }

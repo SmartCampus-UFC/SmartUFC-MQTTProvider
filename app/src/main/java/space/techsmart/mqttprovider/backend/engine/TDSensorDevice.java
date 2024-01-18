@@ -28,9 +28,6 @@ public class TDSensorDevice extends GenericDevice {
 
 	@Override
 	public void run() {
-		//System.out.println(
-				//sensorType + " sends a message  in each " + duration + " ms. We will generate " + nSensors + "\n");
-		// random.setSeed(Param.seed);
 		this.initializeSensors();
 		try {
 			this.publish();
@@ -40,7 +37,6 @@ public class TDSensorDevice extends GenericDevice {
 	}
 
 	private void initializeSensors() {
-		//System.out.println("A duração do sensor " + this.sensorType + " é " + this.duration);
 		for (int i = 0; i < nSensors; i++) {
 			Sensor s1 = new Sensor();
 			s1.setDuration(duration);
@@ -58,7 +54,6 @@ public class TDSensorDevice extends GenericDevice {
 		msg += key + "|";
 		if (!(messageType.equals("booleanText"))) {
 			if (max == null)
-				// msg += getRandomData(messageType[0]) + ";";
 				msg += getRandomData(messageType);
 			else
 				msg += getRandomData(messageType, max, min);
@@ -84,10 +79,8 @@ public class TDSensorDevice extends GenericDevice {
 			temp = sensor.peek();
 
 			try {
-				// System.out.println("tempo de espera de primeira msg é "+temp.getStartSend());
 				Thread.sleep(temp.getStartSend());
-				// System.out.println("já foi");
-			} catch (InterruptedException e1) {
+				} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -95,7 +88,6 @@ public class TDSensorDevice extends GenericDevice {
 				if (!sensor.isEmpty())
 					temp = (Sensor) sensor.remove();
 
-				//System.out.println(m);
 				client.publish(this.topicPub, m.getBytes(), Param.qos, false);
 
 				if (temp != null) {
@@ -109,19 +101,17 @@ public class TDSensorDevice extends GenericDevice {
 					m = this.setSensorInfo(key, temp2.getId());
 				}
 				try {
-					// System.out.println("sleep "+timeToSleep);
 					Thread.sleep(timeToSleep);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			//} while (!(TimeControl.isDone()) && !isAbort);
 			} while (latch.getCount() != 0);
 		} catch (MqttException ex) {
 			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 		try {
-			client.disconnect(); // problema?
+			client.disconnect();
 		} catch (MqttException ex) {
 			Logger.getLogger(TDSensorDevice.class.getName()).log(Level.SEVERE, null, ex);
 		}

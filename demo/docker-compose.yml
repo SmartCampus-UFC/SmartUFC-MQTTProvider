@@ -27,7 +27,7 @@ services:
     hostname: postgres
     container_name: postgres
     volumes:
-      - ./mqttprovider-data/mqttproviderdbV2.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+      - ./mqttprovider-data/mqttproviderdbV3.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
     environment:
       POSTGRES_PASSWORD: "mysecretpassword"
       POSTGRES_USER: "postgres"
@@ -234,6 +234,42 @@ services:
       - 9237
     ports:
       - "9237:9237"
+    networks:
+      - site-net
+
+  nodeexporter:
+    image: prom/node-exporter:latest
+    container_name: nodeexporter
+    user: root
+    privileged: true
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: on-failure
+    expose:
+      - 9100
+    networks:
+      - site-net
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: on-failure
+    expose:
+      - 8080
     networks:
       - site-net
 

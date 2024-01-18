@@ -2,8 +2,8 @@ node_modules
 HELP.md
 target/
 frontend/
-upload-dir/smartspec
-upload-dir/sumo
+#upload-dir/smartspec
+#upload-dir/sumo
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
