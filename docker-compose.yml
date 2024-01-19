@@ -25,7 +25,7 @@ services:
     hostname: postgres
     container_name: postgres
     volumes:
-      - ./demo/mqttprovider-data/mqttproviderdb.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+      - ./demo/mqttprovider-data/mqttproviderdbV4.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
     environment:
       POSTGRES_PASSWORD: "mysecretpassword"
       POSTGRES_USER: "postgres"

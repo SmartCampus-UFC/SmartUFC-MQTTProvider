@@ -1,44 +1,44 @@
 version: "3.5"
 services:
-  mqttprovider:
-    build: ../app
-    image: mqttprovider:v1.0
-    hostname: mqttprovider
-    container_name: mqttprovider
-    volumes:
-      - ../app/upload-dir:/app/target/upload-dir
-    environment:
-      DB_HOSTNAME: "postgres"
-      DB_PORT: 5433
-      DB_DATABASE: "mqttproviderdb"
-      DB_USER: "postgres"
-      DB_PASS: "mysecretpassword"
-    networks:
-      - site-net
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-      - orion
-      - mosquitto
+  #  mqttprovider:
+  #    build: ../app
+  #    image: mqttprovider:v1.0
+  #    hostname: mqttprovider
+  #    container_name: mqttprovider
+  #    volumes:
+  #      - ../app/upload-dir:/app/target/upload-dir
+  #    environment:
+  #      DB_HOSTNAME: "postgres"
+  #      DB_PORT: 5433
+  #      DB_DATABASE: "mqttproviderdb"
+  #      DB_USER: "postgres"
+  #      DB_PASS: "mysecretpassword"
+  #    networks:
+  #      - site-net
+  #    ports:
+  #      - "8081:8080"
+  #    depends_on:
+  #      - postgres
+  #      - orion
+  #      - mosquitto
 
-  postgres:
-    image: postgres
-    hostname: postgres
-    container_name: postgres
-    volumes:
-      - ./mqttprovider-data/mqttproviderdbV3.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
-    environment:
-      POSTGRES_PASSWORD: "mysecretpassword"
-      POSTGRES_USER: "postgres"
-      POSTGRES_DB: "mqttproviderdb"
-    networks:
-      - site-net
-    expose:
-      - "5433"
-    ports:
-      - "5433:5433"
-    command: -p 5433
+  #  postgres:
+  #    image: postgres
+  #    hostname: postgres
+  #    container_name: postgres
+  #    volumes:
+  #      - ./mqttprovider-data/mqttproviderdbV4.sql:/docker-entrypoint-initdb.d/mqttproviderdb.sql
+  #    environment:
+  #      POSTGRES_PASSWORD: "mysecretpassword"
+  #      POSTGRES_USER: "postgres"
+  #      POSTGRES_DB: "mqttproviderdb"
+  #    networks:
+  #      - site-net
+  #    expose:
+  #      - "5433"
+  #    ports:
+  #      - "5433:5433"
+  #    command: -p 5433
 
   # Orion is the context broker
   orion:
@@ -193,7 +193,7 @@ services:
       - GF_INSTALL_PLUGINS=orchestracities-map-panel,grafana-clock-panel,grafana-worldmap-panel
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
-      - ./grafana/plugins:/var/lib/grafana/plugins
+      #- ./grafana/plugins:/var/lib/grafana/plugins
     networks:
       - site-net
 

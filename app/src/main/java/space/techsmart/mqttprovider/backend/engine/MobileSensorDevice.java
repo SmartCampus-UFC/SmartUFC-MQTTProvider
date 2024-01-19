@@ -79,7 +79,7 @@ public class MobileSensorDevice extends GenericDevice {
 			        double x = vehicle.getX();
 			        double y = vehicle.getY();
 			        String m1 = "long|" + x+"|lat|" + y;
-			        System.out.println(m1); // Output the coordinates
+			        //System.out.println(m1); // Output the coordinates
 					client.publish(this.topicPub, m1.getBytes(), Param.qos, false);
 			    }
 			    try {

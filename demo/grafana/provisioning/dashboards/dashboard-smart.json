@@ -24,20 +24,19 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 5,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 6,
-      "panels": [],
-      "title": "UTH Sensors",
+      "id": 27,
+      "title": "Number of Devices",
       "type": "row"
     },
     {
@@ -48,102 +47,43 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "red",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "series",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "mode": "thresholds"
           },
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "humidity"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "humidity"
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
               }
             ]
           }
-        ]
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 24,
+        "h": 5,
+        "w": 3,
         "x": 0,
         "y": 1
       },
-      "id": 2,
+      "id": 29,
       "options": {
-        "legend": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
           "calcs": [
-            "min",
-            "max",
-            "lastNotNull",
-            "mean"
+            "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "textMode": "auto"
       },
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -152,9 +92,8 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  temperature\r\nFROM $uht_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${uht_device:raw}'\r\nORDER BY 1,2",
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $uht_table\r\nWHERE\r\n  $__timeFilter(time_index)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -173,7 +112,57 @@
             ],
             "limit": 50
           }
+        }
+      ],
+      "title": "UHT Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 1
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
         {
           "datasource": {
             "type": "postgres",
@@ -181,10 +170,9 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  humidity\r\nFROM $uht_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${uht_device:raw}'\r\nORDER BY 1,2",
-          "refId": "B",
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $doorsensor_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
           "sql": {
             "columns": [
               {
@@ -204,739 +192,1548 @@
           }
         }
       ],
-      "title": "UHT Sensor: $uht_device",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
+      "title": "Door Contact Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "destinationType": "number",
-                "targetField": "temperature"
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 1
+      },
+      "id": 30,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $wifisensor_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
               }
             ],
-            "fields": {}
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
           }
         }
       ],
-      "type": "timeseries"
+      "title": "WiFi Sensors",
+      "type": "stat"
     },
     {
-      "collapsed": false,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 9,
+        "y": 1
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $vehicle_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Vehicle Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 12,
+        "y": 1
+      },
+      "id": 36,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $currsensor_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Current Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 15,
+        "y": 1
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $gassensor_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Gas Detector Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 18,
+        "y": 1
+      },
+      "id": 38,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $nfcsensor_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "NFC Sensors",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 6
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $lamp_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Lamp Actuators",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 6
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $airconditioner_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Air Conditioner Actuators",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P0DE374AC66335B6C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 6
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  count(DISTINCT entity_id)\r\nFROM $doorlocker_table\r\nWHERE\r\n  $__timeFilter(time_index)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Door Locker Actuators",
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 11
       },
+      "id": 6,
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "red",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "series",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 50
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "humidity"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "humidity"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 7
+          },
+          "id": 2,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "lastNotNull",
+                "mean"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  temperature\r\nFROM $uht_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${uht_device:raw}'\r\nORDER BY 1,2",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  humidity\r\nFROM $uht_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${uht_device:raw}'\r\nORDER BY 1,2",
+              "refId": "B",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "UHT Sensor: $uht_device",
+          "transformations": [
+            {
+              "id": "convertFieldType",
+              "options": {
+                "conversions": [
+                  {
+                    "destinationType": "number",
+                    "targetField": "temperature"
+                  }
+                ],
+                "fields": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "UTH Sensors",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
       "id": 18,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "color-text"
+                },
+                "inspect": false
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "open": {
+                      "color": "dark-red",
+                      "index": 0
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "id": 24,
+          "options": {
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "9.4.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  doorcontact as \"State\"\r\nFROM $doorsensor_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${doorsensor_device:raw}'\r\nORDER BY 1 desc\r\nLIMIT 100",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "$doorsensor_device",
+          "type": "table"
+        }
+      ],
       "title": "Door Contact Sensors",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "color-text"
-            },
-            "inspect": false
-          },
-          "mappings": [
-            {
-              "options": {
-                "open": {
-                  "color": "dark-red",
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
+      "collapsed": true,
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 1,
+        "w": 24,
         "x": 0,
-        "y": 12
+        "y": 13
       },
-      "id": 24,
-      "options": {
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
+      "id": 15,
+      "panels": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P0DE374AC66335B6C"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  doorcontact as \"State\"\r\nFROM $doorsensor_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${doorsensor_device:raw}'\r\nORDER BY 1 desc\r\nLIMIT 100",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
                 },
-                "type": "groupBy"
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 50
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 16,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "lastNotNull",
+                "mean"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  $__timeGroup(time_index, '15m') AS \"time\",  \r\n  entity_id AS metric,\r\n  count(personid) as value  \r\nFROM $wifisensor_table t \r\nWHERE $__timeFilter(time_index) and t.entity_id = '${wifisensor_device:raw}'  \r\nGROUP BY 1, 2\r\nORDER BY $__timeGroup(time_index, '15m')",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
               }
-            ],
-            "limit": 50
-          }
+            }
+          ],
+          "title": "Number of New Connections [15m]: $wifisensor_device",
+          "transformations": [
+            {
+              "id": "convertFieldType",
+              "options": {
+                "conversions": [
+                  {
+                    "destinationType": "number",
+                    "targetField": "value"
+                  }
+                ],
+                "fields": {}
+              }
+            }
+          ],
+          "type": "timeseries"
         }
       ],
-      "title": "$doorsensor_device",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 20
-      },
-      "id": 15,
-      "panels": [],
       "title": "WiFi Sensors",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
+      "collapsed": true,
       "gridPos": {
-        "h": 9,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 14
       },
-      "id": 16,
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "lastNotNull",
-            "mean"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
+      "id": 8,
+      "panels": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P0DE374AC66335B6C"
           },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(time_index, '15m') AS \"time\",  \r\n  entity_id AS metric,\r\n  count(personid) as value  \r\nFROM $wifisensor_table t \r\nWHERE $__timeFilter(time_index) and t.entity_id = '${wifisensor_device:raw}'  \r\nGROUP BY 1, 2\r\nORDER BY $__timeGroup(time_index, '15m')",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "color-text"
                 },
-                "type": "groupBy"
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "OFF": {
+                      "color": "dark-red",
+                      "index": 1
+                    },
+                    "ON": {
+                      "color": "dark-green",
+                      "index": 0
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
               }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Number of New Connections [15m]: $wifisensor_device",
-      "transformations": [
-        {
-          "id": "convertFieldType",
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 10
+          },
+          "id": 10,
           "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "value"
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "9.4.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $lamp_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $lamp_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
               }
-            ],
-            "fields": {}
-          }
+            }
+          ],
+          "title": "Lamp Actuators List",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "color-text"
+                },
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "OFF": {
+                      "color": "dark-red",
+                      "index": 1
+                    },
+                    "ON": {
+                      "color": "dark-green",
+                      "index": 0
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 10
+          },
+          "id": 25,
+          "options": {
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "9.4.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $airconditioner_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $airconditioner_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Air Conditioner Actuators List",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P0DE374AC66335B6C"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "color-text"
+                },
+                "inspect": true
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "LOCKED": {
+                      "color": "dark-green",
+                      "index": 0
+                    },
+                    "UNLOCKED": {
+                      "color": "dark-red",
+                      "index": 1
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "id": 13,
+          "options": {
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "9.4.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $doorlocker_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $doorlocker_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Door Locker Actuators List",
+          "type": "table"
         }
       ],
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 30
-      },
-      "id": 8,
-      "panels": [],
       "title": "Actuators",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "color-text"
-            },
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "OFF": {
-                  "color": "dark-red",
-                  "index": 1
-                },
-                "ON": {
-                  "color": "dark-green",
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 31
-      },
-      "id": 10,
-      "options": {
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P0DE374AC66335B6C"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $lamp_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $lamp_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Lamp Actuators List",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "color-text"
-            },
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "OFF": {
-                  "color": "dark-red",
-                  "index": 1
-                },
-                "ON": {
-                  "color": "dark-green",
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 31
-      },
-      "id": 25,
-      "options": {
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P0DE374AC66335B6C"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $lamp_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $lamp_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Lamp Actuators List",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "color-text"
-            },
-            "inspect": true
-          },
-          "mappings": [
-            {
-              "options": {
-                "LOCKED": {
-                  "color": "dark-green",
-                  "index": 0
-                },
-                "UNLOCKED": {
-                  "color": "dark-red",
-                  "index": 1
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 39
-      },
-      "id": 13,
-      "options": {
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P0DE374AC66335B6C"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT DISTINCT time, entity_id as \"Device\", t.state as \"State\"\r\nFROM\r\n  (SELECT MAX(time_index) AS \"time\", entity_id as \"Device\"\r\n  FROM $doorlocker_table as t\r\n  WHERE $__timeFilter(time_index)\r\n  GROUP BY entity_id\r\n  ORDER BY MAX(time_index) desc) l, \r\n  $doorlocker_table t\r\nWHERE time = t.time_index AND entity_id = t.entity_id",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Door Locker Actuators List",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 15
       },
       "id": 20,
-      "panels": [],
-      "title": "Vehicle Tracking",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P0DE374AC66335B6C"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 16,
-        "w": 24,
-        "x": 0,
-        "y": 48
-      },
-      "id": 22,
-      "options": {
-        "basemap": {
-          "config": {},
-          "type": "default"
-        },
-        "controls": {
-          "mouseWheelZoom": true,
-          "showAttribution": true,
-          "showDebug": false,
-          "showLayercontrol": false,
-          "showScale": true,
-          "showZoom": true
-        },
-        "layers": [
-          {
-            "config": {
-              "cluster": false,
-              "clusterDistance": 20,
-              "clusterMinDistance": 0,
-              "clusterValue": "size",
-              "color": {
-                "fixed": "semi-dark-red"
-              },
-              "enableGradient": false,
-              "enableShadow": false,
-              "fillOpacity": 0.4,
-              "iconSize": 12,
-              "pinShape": "marker",
-              "selectIcon": "fa-car",
-              "shape": "cross",
-              "showLegend": true,
-              "showPin": true,
-              "size": {
-                "fixed": 5,
-                "max": 15,
-                "min": 2
-              }
-            },
-            "displayProperties": [
-              "time",
-              "lat",
-              "long"
-            ],
-            "location": {
-              "latitude": "lat",
-              "longitude": "long",
-              "mode": "coords"
-            },
-            "name": "Vehicle",
-            "query": "A",
-            "timeField": "time",
-            "titleField": "metric",
-            "type": "markers"
-          }
-        ],
-        "view": {
-          "id": "auto",
-          "lat": -3.738277,
-          "lon": -38.57066,
-          "shared": false,
-          "zoom": 18
-        }
-      },
-      "targets": [
+      "panels": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P0DE374AC66335B6C"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  lat, long\r\nFROM $vehicle_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${vehicle_device:raw}'\r\nORDER BY 1 DESC\r\nLIMIT 1",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
               }
-            ],
-            "groupBy": [
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 16,
+            "w": 24,
+            "x": 0,
+            "y": 11
+          },
+          "id": 22,
+          "options": {
+            "basemap": {
+              "config": {},
+              "type": "default"
+            },
+            "controls": {
+              "mouseWheelZoom": true,
+              "showAttribution": true,
+              "showDebug": false,
+              "showLayercontrol": false,
+              "showScale": true,
+              "showZoom": true
+            },
+            "layers": [
               {
-                "property": {
-                  "type": "string"
+                "config": {
+                  "cluster": false,
+                  "clusterDistance": 20,
+                  "clusterMinDistance": 0,
+                  "clusterValue": "size",
+                  "color": {
+                    "fixed": "semi-dark-red"
+                  },
+                  "enableGradient": false,
+                  "enableShadow": false,
+                  "fillOpacity": 0.4,
+                  "iconSize": 12,
+                  "pinShape": "marker",
+                  "selectIcon": "fa-car",
+                  "shape": "cross",
+                  "showLegend": true,
+                  "showPin": true,
+                  "size": {
+                    "fixed": 5,
+                    "max": 15,
+                    "min": 2
+                  }
                 },
-                "type": "groupBy"
+                "displayProperties": [
+                  "time",
+                  "lat",
+                  "long"
+                ],
+                "location": {
+                  "latitude": "lat",
+                  "longitude": "long",
+                  "mode": "coords"
+                },
+                "name": "Vehicle",
+                "query": "A",
+                "timeField": "time",
+                "titleField": "metric",
+                "type": "markers"
               }
             ],
-            "limit": 50
-          }
+            "view": {
+              "id": "auto",
+              "lat": -3.738277,
+              "lon": -38.57066,
+              "shared": false,
+              "zoom": 18
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P0DE374AC66335B6C"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  time_index AS \"time\",\r\n  entity_id AS metric,\r\n  lat, long\r\nFROM $vehicle_table t\r\nWHERE\r\n  $__timeFilter(time_index) and t.entity_id = '${vehicle_device:raw}'\r\nORDER BY 1 DESC\r\nLIMIT 1",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "$vehicle_device",
+          "type": "orchestracities-map-panel"
         }
       ],
-      "title": "$vehicle_device",
-      "type": "orchestracities-map-panel"
+      "title": "Vehicle Tracking",
+      "type": "row"
     }
   ],
   "refresh": "5s",
@@ -996,10 +1793,31 @@
         "type": "constant"
       },
       {
+        "hide": 2,
+        "name": "currsensor_table",
+        "query": "etcurrentsensor",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "hide": 2,
+        "name": "gassensor_table",
+        "query": "etgasdetector",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "hide": 2,
+        "name": "nfcsensor_table",
+        "query": "etnfcreader",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
         "current": {
           "selected": true,
-          "text": "UHTSensor:uhtSensor001001001I0",
-          "value": "UHTSensor:uhtSensor001001001I0"
+          "text": "UHTSensor:mult200UHTSensorI23",
+          "value": "UHTSensor:mult200UHTSensorI23"
         },
         "datasource": {
           "type": "postgres",
@@ -1022,15 +1840,14 @@
       {
         "current": {
           "selected": false,
-          "text": "Lamp:lamp001001001",
-          "value": "Lamp:lamp001001001"
+          "text": "Lamp:mult200LampI4",
+          "value": "Lamp:mult200LampI4"
         },
         "datasource": {
           "type": "postgres",
           "uid": "P0DE374AC66335B6C"
         },
         "definition": "select entity_id from $lamp_table",
-        "error": {},
         "hide": 2,
         "includeAll": false,
         "label": "Lamp Actuator",
@@ -1047,8 +1864,8 @@
       {
         "current": {
           "selected": false,
-          "text": "AirConditioner:airConditioner001002001I0",
-          "value": "AirConditioner:airConditioner001002001I0"
+          "text": "AirConditioner:mult200AirConditionerI156",
+          "value": "AirConditioner:mult200AirConditionerI156"
         },
         "datasource": {
           "type": "postgres",
@@ -1071,8 +1888,8 @@
       {
         "current": {
           "selected": false,
-          "text": "DoorLocker:door001002001",
-          "value": "DoorLocker:door001002001"
+          "text": "DoorLocker:mult200DoorLockerI110",
+          "value": "DoorLocker:mult200DoorLockerI110"
         },
         "datasource": {
           "type": "postgres",
@@ -1094,9 +1911,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "WifiSensor:edWifiSensor001I0",
-          "value": "WifiSensor:edWifiSensor001I0"
+          "selected": false,
+          "text": "WifiSensor:mult200WiFiSensorI152",
+          "value": "WifiSensor:mult200WiFiSensorI152"
         },
         "datasource": {
           "type": "postgres",
@@ -1119,8 +1936,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Vehicle:vehicle010101I0",
-          "value": "Vehicle:vehicle010101I0"
+          "text": "Vehicle:mult200VehicleI0",
+          "value": "Vehicle:mult200VehicleI0"
         },
         "datasource": {
           "type": "postgres",
@@ -1143,8 +1960,8 @@
       {
         "current": {
           "selected": false,
-          "text": "DoorSensor:edDoorSensor001I0",
-          "value": "DoorSensor:edDoorSensor001I0"
+          "text": "DoorSensor:mult200DoorSensorI81",
+          "value": "DoorSensor:mult200DoorSensorI81"
         },
         "datasource": {
           "type": "postgres",
@@ -1230,8 +2047,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Smart Devices",
-  "uid": "2X544vgVe",
+  "title": "Smart Devices Copy",
+  "uid": "jBmYRxcIz",
   "version": 1,
   "weekStart": ""
 }

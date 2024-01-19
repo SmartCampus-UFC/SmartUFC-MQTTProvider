@@ -126,7 +126,7 @@ public class MainProvider {
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
+			                }
 					setActuatorDevices(actuator);//, executorService, latch);
 				}
 				for (TDSensor tdSensor : device.getTdSensors()) {
