@@ -50,6 +50,12 @@ The necessary configuration information can be seen in the services section of t
 
 # Prerequisites
 
+## Minimal hardware requirements
+
+- 2-core CPU (additional are strongly recommended, especially if you intend to emulate more than 1000 devices);
+- 4 GB RAM (additional memory is strongly recommended, especially if you intend to emulate more than 1000 devices);
+- Minimum 30 GB hard disk space.
+
 ## Docker and Docker Compose
 
 To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a container
